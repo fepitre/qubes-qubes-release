@@ -1,6 +1,6 @@
 %define dist_version @VERSION@
 %define release_name R%{dist_version}
-%define fedora_base_version 32
+%define centos_base_version 8
 
 Summary:	Qubes release files
 Name:		qubes-release
@@ -9,11 +9,11 @@ Release:	@REL@
 License:	GPLv2
 Group:		System Environment/Base
 Source0:	%{name}-%{version}.tar.bz2
-Obsoletes:	fedora-release
+Obsoletes:	centos-release
 Obsoletes:	redhat-release
-Provides:	fedora-release = %{fedora_base_version}-%{release}
-Provides:	redhat-release = %{fedora_base_version}-%{release}
-Provides:	system-release = %{fedora_base_version}-%{release}
+Provides:	centos-release = %{centos_base_version}-%{release}
+Provides:	redhat-release = %{centos_base_version}-%{release}
+Provides:	system-release = %{centos_base_version}-%{release}
 Provides:	system-release(releasever) = %{version}
 Conflicts:	rpm < 4.14
 Conflicts:	qubes-core-dom0-linux < 4.0.23
@@ -30,7 +30,7 @@ Summary:	Release Notes
 License:	Open Publication
 Group:		System Environment/Base
 Provides:	system-release-notes = %{version}-%{release}
-Conflicts:	fedora-release-notes
+Conflicts:	centos-release-notes
 
 %description notes
 Qubes release notes package.
@@ -48,7 +48,7 @@ cp -p $RPM_BUILD_ROOT/etc/qubes-release $RPM_BUILD_ROOT/etc/issue
 echo "Kernel \r on an \m (\l)" >> $RPM_BUILD_ROOT/etc/issue
 cp -p $RPM_BUILD_ROOT/etc/issue $RPM_BUILD_ROOT/etc/issue.net
 echo >> $RPM_BUILD_ROOT/etc/issue
-ln -s qubes-release $RPM_BUILD_ROOT/etc/fedora-release
+ln -s qubes-release $RPM_BUILD_ROOT/etc/centos-release
 ln -s qubes-release $RPM_BUILD_ROOT/etc/redhat-release
 ln -s qubes-release $RPM_BUILD_ROOT/etc/system-release
 
@@ -67,9 +67,8 @@ install -d -m 755 $RPM_BUILD_ROOT/etc/pki/rpm-gpg
 install -m 644 RPM-GPG-KEY* $RPM_BUILD_ROOT/etc/pki/rpm-gpg/
 
 install -d -m 755 $RPM_BUILD_ROOT/etc/yum.repos.d
-sed -e "s/%%DIST%%/fc%{fedora_base_version}/" qubes-dom0.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/qubes-dom0.repo
-sed -e "s/%%FCREL%%/%{fedora_base_version}/" fedora.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/fedora.repo
-sed -e "s/%%FCREL%%/%{fedora_base_version}/" fedora-updates.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/fedora-updates.repo
+sed -e "s/%%DIST%%/centos%{centos_base_version}/" qubes-dom0.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/qubes-dom0.repo
+sed -e "s/%%CENTOSREL%%/%{centos_base_version}/" centos.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/centos.repo
 install -m 644 qubes-templates.repo $RPM_BUILD_ROOT/etc/yum.repos.d
 
 # Set up the dist tag macros
@@ -79,9 +78,9 @@ cat >> $RPM_BUILD_ROOT/etc/rpm/macros.dist << EOF
 
 %%qubes		%{dist_version}
 %%dist		.qbs%{dist_version}
-%%fedora		%{fedora_base_version}
+%%centos	%{centos_base_version}
 %%qbs3		1
-%%fc%{fedora_base_version}		1
+%%centos%{centos_base_version}		1
 EOF
 
 %posttrans
@@ -97,13 +96,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc GPL 
 %config %attr(0644,root,root) /etc/os-release
 %config %attr(0644,root,root) /etc/qubes-release
-%config %attr(0644,root,root) /etc/fedora-release
+%config %attr(0644,root,root) /etc/centos-release
 /etc/redhat-release
 /etc/system-release
 %config %attr(0644,root,root) /etc/system-release-cpe
 %dir /etc/yum.repos.d
-%config(noreplace) /etc/yum.repos.d/fedora.repo
-%config(noreplace) /etc/yum.repos.d/fedora-updates.repo
+%config(noreplace) /etc/yum.repos.d/centos.repo
 %config(noreplace) /etc/yum.repos.d/qubes-dom0.repo
 %config(noreplace) /etc/yum.repos.d/qubes-templates.repo
 %config(noreplace) %attr(0644,root,root) /etc/issue
@@ -117,5 +115,4 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.Qubes-Release-Notes
 
 %changelog
-* Wed Jan 13 2010 Tomasz Sterna <smoku@xiaoka.com> - 1
-- Initial Qubes 1 Release package
+@CHANGELOG@
